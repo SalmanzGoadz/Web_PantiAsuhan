@@ -100,9 +100,10 @@
             <p class="text-sm text-text-light text-center md:text-left">
                 &copy; {{ date('Y') }} {{ \App\Models\SiteSetting::get('site_name', 'Panti Asuhan') }}. Hak Cipta Dilindungi.
             </p>
-            <div class="flex items-center gap-4 text-sm text-text-light">
+            <!-- <div class="flex items-center gap-4 text-sm text-text-light">
                 <a href="{{ route('admin.login') }}" class="hover:text-primary transition-colors">Admin Login</a>
-            </div>
+            </div> -->
         </div>
     </div>
 </footer>
+    

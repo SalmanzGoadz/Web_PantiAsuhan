@@ -88,6 +88,7 @@ Berdasarkan referensi desain yang diberikan (screenshot situs Panti Asuhan Muham
 - Menu navigasi horizontal (Beranda, Profil, Kegiatan, Berita, dst — menyesuaikan sitemap final).
 - Tombol CTA menonjol di ujung kanan (mis. "Donasi Sekarang") menggunakan warna primary `#ff6b00`.
 - Kedua logo & nama panti diatur dari `/admin/pengaturan` (upload logo utama & logo kedua) agar tidak hardcode di kode.
+contoh di refrensiLogoNavbar.png
 
 ### Footer
 Mengikuti struktur pada referensi gambar, footer terdiri dari 4 kolom (desktop) yang menyusun jadi 1 kolom vertikal di mobile:
@@ -97,7 +98,9 @@ Mengikuti struktur pada referensi gambar, footer terdiri dari 4 kolom (desktop) 
 4. **Peta Lokasi** — embed Google Maps (di atas footer, sebelum kolom footer dimulai) menunjukkan lokasi panti.
 - **Baris copyright** di bagian paling bawah: `© {tahun berjalan} Yayasan [Nama Panti]. Hak Cipta Dilindungi.` — tahun digenerate otomatis (bukan hardcode).
 
-> Kedua logo (navbar & footer) memakai sumber gambar yang sama — disimpan sekali di `site_settings` (`logo_primary`, `logo_secondary`) agar konsisten dan mudah diupdate di satu tempat.
+> Kedua logo (navbar & footer) memakai sumber gambar yang sama — disimpan sekali di `site_settings` (`logo_primary`, `logo_secondary`) agar konsisten dan mudah diupdate di satu tempat. contoh di refrensiLogoFooter.png
+
+untuk navbar logo dan footer logo assetnya ada di D:\laragon\www\WebPantiAsuhan\storage\app\public\logo dengan nama logo kanan untuk kanan dan logo kiri untuk kiri
 
 ---
 

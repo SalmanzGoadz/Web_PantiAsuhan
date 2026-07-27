@@ -50,6 +50,9 @@ class NewsController extends Controller
     {
         $data = $request->validated();
 
+        // Jika tanggal publish kosong, isi dengan waktu saat ini
+        $data['published_at'] = $data['published_at'] ?? now();
+
         // Handle slug generation
         $data['slug'] = Str::slug($data['title']);
         $data['slug'] = $this->ensureUniqueSlug($data['slug']);
@@ -85,6 +88,9 @@ class NewsController extends Controller
     public function update(UpdateNewsRequest $request, News $news): RedirectResponse
     {
         $data = $request->validated();
+
+        // Jika tanggal publish kosong, isi dengan waktu saat ini
+        $data['published_at'] = $data['published_at'] ?? now();
 
         // Handle slug update if title changed
         if ($data['title'] !== $news->title) {
