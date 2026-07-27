@@ -189,3 +189,26 @@ CREATE TABLE `site_settings` (
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
 );
+
+CREATE TABLE `donors` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `amount` decimal(15,2) NOT NULL,
+  `date` date NOT NULL,
+  `is_anonymous` tinyint(1) NOT NULL DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+);
+
+CREATE TABLE `expenses` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL,
+  `amount` decimal(15,2) NOT NULL,
+  `description` text,
+  `date` date NOT NULL,
+  `status` enum('rencana','terlaksana') NOT NULL DEFAULT 'rencana',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+);
