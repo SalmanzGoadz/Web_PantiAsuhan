@@ -97,6 +97,145 @@
     </div>
 </div>
 
+{{-- ============================================================ --}}
+{{-- TRANSPARANSI KEUANGAN / BUKU KAS --}}
+{{-- ============================================================ --}}
+<div class="bg-surface border-t border-border">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+
+        {{-- Section Title --}}
+        <div class="text-center mb-10">
+            <h2 class="text-2xl md:text-3xl font-heading font-bold text-heading mb-3">Transparansi Keuangan</h2>
+            <p class="text-text-light max-w-2xl mx-auto">Kami berkomitmen untuk transparan dalam pengelolaan dana. Berikut adalah laporan keuangan terkini dari setiap donasi yang masuk dan pengeluaran yang dilakukan.</p>
+        </div>
+
+        {{-- Financial Summary Cards --}}
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
+            {{-- Total Donasi --}}
+            <div class="bg-background rounded-2xl p-6 text-center border border-border">
+                <div class="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center text-accent mx-auto mb-3">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <p class="text-sm text-text-light mb-1">Total Donasi Masuk</p>
+                <p class="text-xl font-bold text-heading">Rp {{ number_format($totalDonors, 0, ',', '.') }}</p>
+            </div>
+
+            {{-- Total Pengeluaran --}}
+            <div class="bg-background rounded-2xl p-6 text-center border border-border">
+                <div class="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center text-danger mx-auto mb-3">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                </div>
+                <p class="text-sm text-text-light mb-1">Total Pengeluaran</p>
+                <p class="text-xl font-bold text-heading">Rp {{ number_format($totalExpensesTerlaksana, 0, ',', '.') }}</p>
+            </div>
+
+            {{-- Saldo Tersedia --}}
+            <div class="bg-accent/5 rounded-2xl p-6 text-center border-2 border-accent/20">
+                <div class="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center text-accent mx-auto mb-3">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                </div>
+                <p class="text-sm text-text-light mb-1">Total Dana Tersedia</p>
+                <p class="text-2xl font-bold text-accent">Rp {{ number_format($totalBalance, 0, ',', '.') }}</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {{-- Recent Donors --}}
+            <div>
+                <h3 class="font-heading font-bold text-lg text-heading mb-4 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    Donatur Terbaru
+                </h3>
+
+                @if($recentDonors->isNotEmpty())
+                    <div class="bg-background rounded-xl border border-border overflow-hidden">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="border-b border-border">
+                                    <th class="text-left px-4 py-3 font-semibold text-text-light">Nama</th>
+                                    <th class="text-right px-4 py-3 font-semibold text-text-light">Jumlah</th>
+                                    <th class="text-right px-4 py-3 font-semibold text-text-light">Tanggal</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-border">
+                                @foreach($recentDonors as $donor)
+                                    <tr class="hover:bg-surface/50 transition-colors">
+                                        <td class="px-4 py-3">
+                                            <div class="flex items-center gap-2">
+                                                <div class="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center text-accent text-xs font-bold shrink-0">
+                                                    {{ strtoupper(substr($donor->display_name, 0, 1)) }}
+                                                </div>
+                                                <span class="font-medium text-heading">{{ $donor->display_name }}</span>
+                                            </div>
+                                        </td>
+                                        <td class="px-4 py-3 text-right font-semibold text-accent">Rp {{ number_format($donor->amount, 0, ',', '.') }}</td>
+                                        <td class="px-4 py-3 text-right text-text-light text-xs">{{ $donor->date->format('d M Y') }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @else
+                    <div class="bg-background rounded-xl border border-border p-8 text-center text-text-light">
+                        <p>Belum ada data donatur.</p>
+                    </div>
+                @endif
+            </div>
+
+            {{-- Expenses / RAB --}}
+            <div>
+                <h3 class="font-heading font-bold text-lg text-heading mb-4 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                    Rencana Anggaran Belanja (RAB)
+                </h3>
+
+                @if($expenses->isNotEmpty())
+                    <div class="bg-background rounded-xl border border-border overflow-hidden">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="border-b border-border">
+                                    <th class="text-left px-4 py-3 font-semibold text-text-light">Kegiatan</th>
+                                    <th class="text-right px-4 py-3 font-semibold text-text-light">Jumlah</th>
+                                    <th class="text-center px-4 py-3 font-semibold text-text-light">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-border">
+                                @foreach($expenses as $expense)
+                                    <tr class="hover:bg-surface/50 transition-colors">
+                                        <td class="px-4 py-3">
+                                            <p class="font-medium text-heading">{{ $expense->title }}</p>
+                                            <p class="text-xs text-text-light">{{ $expense->date->format('d M Y') }}</p>
+                                        </td>
+                                        <td class="px-4 py-3 text-right font-semibold text-text">Rp {{ number_format($expense->amount, 0, ',', '.') }}</td>
+                                        <td class="px-4 py-3 text-center">
+                                            @if($expense->isTerlaksana())
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                    <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                                                    Terlaksana
+                                                </span>
+                                            @else
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                                    <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/></svg>
+                                                    Rencana
+                                                </span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @else
+                    <div class="bg-background rounded-xl border border-border p-8 text-center text-text-light">
+                        <p>Belum ada data pengeluaran.</p>
+                    </div>
+                @endif
+            </div>
+        </div>
+
+    </div>
+</div>
+
 @endsection
 
 @push('scripts')

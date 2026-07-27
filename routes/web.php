@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\BukuKasController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\GalleryController;
 use App\Http\Controllers\Admin\HeroSlideController;
@@ -81,5 +82,21 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::put('settings/social', [SiteSettingController::class, 'updateSocial'])->name('settings.update-social');
         Route::put('settings/donation', [SiteSettingController::class, 'updateDonation'])->name('settings.update-donation');
         Route::put('settings/page/{slug}', [SiteSettingController::class, 'updatePage'])->name('settings.update-page');
+
+        // Buku Kas — Financial Transparency
+        Route::prefix('buku-kas')->name('buku-kas.')->group(function () {
+            Route::get('/', [BukuKasController::class, 'index'])->name('index');
+
+            // Donors
+            Route::post('donors', [BukuKasController::class, 'storeDonor'])->name('donors.store');
+            Route::put('donors/{donor}', [BukuKasController::class, 'updateDonor'])->name('donors.update');
+            Route::delete('donors/{donor}', [BukuKasController::class, 'destroyDonor'])->name('donors.destroy');
+
+            // Expenses / RAB
+            Route::post('expenses', [BukuKasController::class, 'storeExpense'])->name('expenses.store');
+            Route::put('expenses/{expense}', [BukuKasController::class, 'updateExpense'])->name('expenses.update');
+            Route::delete('expenses/{expense}', [BukuKasController::class, 'destroyExpense'])->name('expenses.destroy');
+            Route::patch('expenses/{expense}/toggle', [BukuKasController::class, 'toggleExpenseStatus'])->name('expenses.toggle');
+        });
     });
 });

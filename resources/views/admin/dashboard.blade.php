@@ -51,18 +51,20 @@
             </div>
         </div>
 
-        {{-- Quick Actions --}}
+        {{-- Saldo Keuangan --}}
         <div class="bg-surface rounded-xl shadow-card p-5">
-            <p class="text-sm text-text-light mb-3">Aksi Cepat</p>
-            <div class="space-y-2">
-                <a href="{{ route('admin.news.create') }}" class="flex items-center gap-2 text-sm text-primary hover:text-primary-dark transition-fast">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                    Tulis Berita Baru
-                </a>
-                <a href="{{ route('admin.galleries.create') }}" class="flex items-center gap-2 text-sm text-accent hover:text-accent-dark transition-fast">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                    Buat Album Galeri
-                </a>
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-text-light">Saldo Keuangan</p>
+                    <p class="text-2xl font-bold {{ $stats['total_balance'] >= 0 ? 'text-accent' : 'text-danger' }} mt-1">Rp {{ number_format($stats['total_balance'], 0, ',', '.') }}</p>
+                </div>
+                <div class="w-12 h-12 rounded-xl {{ $stats['total_balance'] >= 0 ? 'bg-accent/10' : 'bg-red-50' }} flex items-center justify-center">
+                    <svg class="w-6 h-6 {{ $stats['total_balance'] >= 0 ? 'text-accent' : 'text-danger' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+            </div>
+            <div class="mt-3 flex items-center gap-3 text-xs">
+                <span class="text-accent font-medium">{{ $stats['donor_count'] }} donatur</span>
+                <a href="{{ route('admin.buku-kas.index') }}" class="text-primary hover:underline">Lihat Buku Kas →</a>
             </div>
         </div>
     </div>

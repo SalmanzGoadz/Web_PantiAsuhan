@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Donor;
+use App\Models\Expense;
 use App\Models\Gallery;
 use App\Models\HeroSlide;
 use App\Models\News;
@@ -113,13 +115,28 @@ class PublicController extends Controller
     }
 
     /**
-     * Show the donation information page.
+     * Show the donation information page with financial transparency.
      */
     public function donation(): View
     {
         $donationSettings = SiteSetting::getGroup('donation');
-        
-        return view('donation', compact('donationSettings'));
+
+        // Financial transparency — dynamic calculation
+        $totalDonors = Donor::sum('amount');
+        $totalExpensesTerlaksana = Expense::terlaksana()->sum('amount');
+        $totalBalance = $totalDonors - $totalExpensesTerlaksana;
+
+        $recentDonors = Donor::latestFirst()->take(10)->get();
+        $expenses = Expense::latestFirst()->get();
+
+        return view('donation', compact(
+            'donationSettings',
+            'totalBalance',
+            'totalDonors',
+            'totalExpensesTerlaksana',
+            'recentDonors',
+            'expenses'
+        ));
     }
 
     /**
