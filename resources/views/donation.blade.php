@@ -95,6 +95,30 @@
             @endif
         </div>
     </div>
+
+    {{-- CTA Pendaftaran Donatur --}}
+    @guest
+    <div class="mt-8 bg-green-800/5 rounded-2xl p-6 sm:p-8 border border-green-800/10">
+        <div class="flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
+            <div class="w-14 h-14 rounded-full bg-green-800/10 flex items-center justify-center text-green-800 shrink-0">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
+            </div>
+            <div class="flex-1">
+                <h3 class="font-heading font-bold text-lg text-green-900 mb-2">Ingin donasi Anda tercatat di sistem dan mudah dilacak?</h3>
+                <p class="text-text-light text-sm mb-4">Dengan mendaftar sebagai Donatur, Anda bisa mengirim donasi langsung melalui website, mengunggah bukti transfer, menulis doa, dan melihat riwayat donasi Anda secara real-time.</p>
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <a href="{{ route('donatur.register') }}" class="inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-green-800 text-white font-semibold rounded-lg hover:bg-green-900 transition-colors shadow-sm">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
+                        Daftar Akun Donatur
+                    </a>
+                    <a href="{{ route('donatur.login') }}" class="inline-flex items-center justify-center gap-2 px-6 py-2.5 border border-green-800/30 text-green-800 font-semibold rounded-lg hover:bg-green-800/5 transition-colors">
+                        Sudah punya akun? Masuk
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endguest
 </div>
 
 {{-- ============================================================ --}}

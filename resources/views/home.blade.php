@@ -214,6 +214,61 @@
     </div>
 </section>
 @endif
+{{-- 5. Kotak Doa & Harapan --}}
+@if(isset($prayers) && $prayers->count() > 0)
+<section class="py-16 md:py-24 bg-green-800 relative overflow-hidden">
+    {{-- Dekorasi latar belakang --}}
+    <div class="absolute inset-0 pointer-events-none">
+        <div class="absolute top-10 left-10 w-40 h-40 bg-white/5 rounded-full"></div>
+        <div class="absolute bottom-10 right-10 w-60 h-60 bg-white/5 rounded-full"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-white/3 rounded-full"></div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        {{-- Header --}}
+        <div class="text-center mb-12">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 text-white font-medium text-sm mb-4">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                Kotak Doa & Harapan
+            </div>
+            <h2 class="text-3xl md:text-4xl font-heading font-bold text-white mb-4">Doa & Harapan dari Para Donatur</h2>
+            <p class="text-white/70 max-w-2xl mx-auto">Setiap doa yang Anda sampaikan bersama donasi adalah cahaya harapan bagi anak-anak panti asuhan kami.</p>
+        </div>
+
+        {{-- Grid Doa --}}
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            @foreach($prayers as $prayer)
+                <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:bg-white/15 transition-colors">
+                    {{-- Ikon kutipan --}}
+                    <svg class="w-8 h-8 text-white/30 mb-3" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/></svg>
+                    
+                    {{-- Teks Doa --}}
+                    <p class="text-white/90 text-sm leading-relaxed mb-4 italic">
+                        "{{ Str::limit($prayer->prayer, 150) }}"
+                    </p>
+                    
+                    {{-- Nama Donatur --}}
+                    <div class="flex items-center gap-2 pt-3 border-t border-white/10">
+                        <div class="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center text-white text-xs font-bold">
+                            {{ strtoupper(substr($prayer->display_name, 0, 1)) }}
+                        </div>
+                        <span class="text-white/70 text-sm font-medium">{{ $prayer->display_name }}</span>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+
+        {{-- CTA Donatur --}}
+        <div class="text-center mt-12">
+            <p class="text-white/60 text-sm mb-4">Ingin donasi Anda tercatat di sistem dan mudah dilacak?</p>
+            <a href="{{ route('donatur.register') }}" class="inline-flex items-center gap-2 px-8 py-3 bg-white text-green-800 font-semibold rounded-full hover:bg-gray-100 transition-all hover:-translate-y-0.5 shadow-lg">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
+                Daftar Akun Donatur
+            </a>
+        </div>
+    </div>
+</section>
+@endif
 
 @endsection
 

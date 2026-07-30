@@ -17,15 +17,20 @@ use Illuminate\View\View;
 class BukuKasController extends Controller
 {
     /**
-     * Display the Buku Kas dashboard with both donors & expenses.
+     * Tampilkan halaman Buku Kas dengan data donatur & pengeluaran.
+     *
+     * Update: Kalkulasi saldo hanya dari donasi 'tervalidasi'.
      */
     public function index(Request $request): View
     {
-        // Dynamic financial calculation
-        $totalDonors = Donor::sum('amount');
+        // Kalkulasi keuangan dinamis — HANYA donasi tervalidasi
+        $totalDonors = Donor::tervalidasi()->sum('amount');
         $totalExpensesTerlaksana = Expense::terlaksana()->sum('amount');
         $totalExpensesRencana = Expense::rencana()->sum('amount');
         $totalBalance = $totalDonors - $totalExpensesTerlaksana;
+
+        // Jumlah donasi menunggu validasi
+        $pendingCount = Donor::menunggu()->count();
 
         $stats = [
             'total_donors' => $totalDonors,
@@ -34,16 +39,21 @@ class BukuKasController extends Controller
             'total_balance' => $totalBalance,
             'donor_count' => Donor::count(),
             'expense_count' => Expense::count(),
+            'pending_count' => $pendingCount,
         ];
 
-        // Donors list with pagination
+        // Daftar donatur dengan paginasi
         $donorsQuery = Donor::latestFirst();
         if ($request->filled('donor_search')) {
             $donorsQuery->where('name', 'like', '%' . $request->donor_search . '%');
         }
+        // Filter berdasarkan status donasi
+        if ($request->filled('donor_status')) {
+            $donorsQuery->where('status', $request->donor_status);
+        }
         $donors = $donorsQuery->paginate(15, ['*'], 'donor_page')->withQueryString();
 
-        // Expenses list with pagination
+        // Daftar pengeluaran dengan paginasi
         $expensesQuery = Expense::latestFirst();
         if ($request->filled('expense_search')) {
             $expensesQuery->where('title', 'like', '%' . $request->expense_search . '%');
@@ -61,16 +71,26 @@ class BukuKasController extends Controller
      * ----------------------------------------------------- */
 
     /**
-     * Store a new donor.
+     * Simpan donatur baru (input manual oleh admin).
+     *
+     * Update: Status default 'tervalidasi' karena admin yang input.
+     * user_id dibiarkan null karena ini donasi manual (via WA/offline).
      */
     public function storeDonor(StoreDonorRequest $request): RedirectResponse
     {
         $data = $request->validated();
         $data['is_anonymous'] = $request->boolean('is_anonymous');
 
+        // Status default 'tervalidasi' untuk input manual admin
+        // Admin bisa pilih status lain jika diperlukan
+        $data['status'] = $request->input('status', 'tervalidasi');
+
+        // user_id null — donasi manual, bukan dari web
+        $data['user_id'] = null;
+
         $donor = Donor::create($data);
 
-        ActivityLog::log('created', $donor, "Menambah donatur: {$donor->name} — Rp " . number_format($donor->amount, 0, ',', '.'));
+        ActivityLog::log('created', $donor, "Menambah donatur (manual): {$donor->name} — Rp " . number_format($donor->amount, 0, ',', '.'));
 
         return redirect()
             ->route('admin.buku-kas.index')
@@ -78,7 +98,7 @@ class BukuKasController extends Controller
     }
 
     /**
-     * Update an existing donor.
+     * Update data donatur yang sudah ada.
      */
     public function updateDonor(UpdateDonorRequest $request, Donor $donor): RedirectResponse
     {
@@ -95,7 +115,7 @@ class BukuKasController extends Controller
     }
 
     /**
-     * Delete a donor.
+     * Hapus data donatur.
      */
     public function destroyDonor(Donor $donor): RedirectResponse
     {
@@ -110,12 +130,29 @@ class BukuKasController extends Controller
             ->with('success', 'Data donatur berhasil dihapus.');
     }
 
+    /**
+     * Validasi donasi — ubah status dari 'menunggu' menjadi 'tervalidasi'.
+     *
+     * Digunakan oleh admin untuk memvalidasi donasi yang masuk dari web
+     * setelah memeriksa bukti transfer.
+     */
+    public function validateDonor(Donor $donor): RedirectResponse
+    {
+        $donor->update(['status' => 'tervalidasi']);
+
+        ActivityLog::log('updated', $donor, "Memvalidasi donasi dari: {$donor->name} — Rp " . number_format($donor->amount, 0, ',', '.'));
+
+        return redirect()
+            ->back()
+            ->with('success', "Donasi dari \"{$donor->name}\" berhasil divalidasi.");
+    }
+
     /* -------------------------------------------------------
      * EXPENSES CRUD
      * ----------------------------------------------------- */
 
     /**
-     * Store a new expense.
+     * Simpan pengeluaran baru.
      */
     public function storeExpense(StoreExpenseRequest $request): RedirectResponse
     {
@@ -129,7 +166,7 @@ class BukuKasController extends Controller
     }
 
     /**
-     * Update an existing expense.
+     * Update pengeluaran yang sudah ada.
      */
     public function updateExpense(UpdateExpenseRequest $request, Expense $expense): RedirectResponse
     {
@@ -143,7 +180,7 @@ class BukuKasController extends Controller
     }
 
     /**
-     * Delete an expense.
+     * Hapus pengeluaran.
      */
     public function destroyExpense(Expense $expense): RedirectResponse
     {
@@ -159,7 +196,7 @@ class BukuKasController extends Controller
     }
 
     /**
-     * Toggle expense status between rencana and terlaksana.
+     * Toggle status pengeluaran antara 'rencana' dan 'terlaksana'.
      */
     public function toggleExpenseStatus(Expense $expense): RedirectResponse
     {

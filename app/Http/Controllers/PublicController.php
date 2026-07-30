@@ -16,7 +16,10 @@ use Illuminate\View\View;
 class PublicController extends Controller
 {
     /**
-     * Show the homepage.
+     * Tampilkan halaman beranda.
+     *
+     * Update: Menambahkan data doa & harapan dari donasi tervalidasi
+     * untuk ditampilkan di section Kotak Doa.
      */
     public function home(): View
     {
@@ -25,12 +28,21 @@ class PublicController extends Controller
         $recentGalleries = Gallery::published()->latestPublished()->take(3)->get();
         
         $aboutPage = Page::findBySlug('tentang-kami');
+
+        // Ambil doa & harapan dari donasi tervalidasi untuk Kotak Doa
+        // Hanya tampilkan yang memiliki doa (prayer tidak null/kosong)
+        $prayers = Donor::tervalidasi()
+            ->whereNotNull('prayer')
+            ->where('prayer', '!=', '')
+            ->latestFirst()
+            ->take(12)
+            ->get();
         
-        return view('home', compact('slides', 'recentNews', 'recentGalleries', 'aboutPage'));
+        return view('home', compact('slides', 'recentNews', 'recentGalleries', 'aboutPage', 'prayers'));
     }
 
     /**
-     * Show the About Us page.
+     * Tampilkan halaman Tentang Kami.
      */
     public function about(): View
     {
@@ -41,7 +53,7 @@ class PublicController extends Controller
     }
 
     /**
-     * Show the Organization Structure page (dynamic diagram).
+     * Tampilkan halaman Struktur Organisasi (diagram dinamis).
      */
     public function organization(): View
     {
@@ -51,7 +63,7 @@ class PublicController extends Controller
     }
 
     /**
-     * Show the SOP page.
+     * Tampilkan halaman SOP.
      */
     public function sop(): View
     {
@@ -61,7 +73,7 @@ class PublicController extends Controller
     }
 
     /**
-     * Show the listing of published news.
+     * Tampilkan daftar berita yang sudah dipublikasikan.
      */
     public function newsIndex(Request $request): View
     {
@@ -77,13 +89,13 @@ class PublicController extends Controller
     }
 
     /**
-     * Show a specific news article.
+     * Tampilkan detail berita.
      */
     public function newsShow(string $slug): View
     {
         $article = News::published()->where('slug', $slug)->firstOrFail();
         
-        // Fetch recent news for sidebar (excluding current article)
+        // Berita terbaru untuk sidebar (kecuali artikel saat ini)
         $recentNews = News::published()
             ->where('id', '!=', $article->id)
             ->latestPublished()
@@ -94,7 +106,7 @@ class PublicController extends Controller
     }
 
     /**
-     * Show the listing of published galleries.
+     * Tampilkan daftar galeri yang sudah dipublikasikan.
      */
     public function galleryIndex(): View
     {
@@ -104,7 +116,7 @@ class PublicController extends Controller
     }
 
     /**
-     * Show a specific gallery album.
+     * Tampilkan detail album galeri.
      */
     public function galleryShow(string $slug): View
     {
@@ -115,18 +127,22 @@ class PublicController extends Controller
     }
 
     /**
-     * Show the donation information page with financial transparency.
+     * Tampilkan halaman informasi donasi & transparansi keuangan.
+     *
+     * Update: Kalkulasi saldo HANYA dari donasi yang sudah 'tervalidasi'.
+     * Daftar donatur publik juga hanya menampilkan donasi tervalidasi.
      */
     public function donation(): View
     {
         $donationSettings = SiteSetting::getGroup('donation');
 
-        // Financial transparency — dynamic calculation
-        $totalDonors = Donor::sum('amount');
+        // Kalkulasi keuangan — hanya donasi tervalidasi
+        $totalDonors = Donor::tervalidasi()->sum('amount');
         $totalExpensesTerlaksana = Expense::terlaksana()->sum('amount');
         $totalBalance = $totalDonors - $totalExpensesTerlaksana;
 
-        $recentDonors = Donor::latestFirst()->take(10)->get();
+        // Hanya tampilkan donatur yang sudah tervalidasi di halaman publik
+        $recentDonors = Donor::tervalidasi()->latestFirst()->take(10)->get();
         $expenses = Expense::latestFirst()->get();
 
         return view('donation', compact(
@@ -140,7 +156,7 @@ class PublicController extends Controller
     }
 
     /**
-     * Show the contact page.
+     * Tampilkan halaman kontak.
      */
     public function contact(): View
     {

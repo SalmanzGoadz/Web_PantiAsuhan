@@ -32,6 +32,19 @@ class AuthController extends Controller
         $remember = $request->boolean('remember');
 
         if (Auth::attempt($credentials, $remember)) {
+            $user = Auth::user();
+
+            // Pastikan hanya admin yang bisa login di halaman admin
+            if (!$user->isAdmin()) {
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+
+                return redirect()
+                    ->route('donatur.login')
+                    ->with('success', 'Silakan gunakan halaman login donatur untuk masuk.');
+            }
+
             $request->session()->regenerate();
 
             ActivityLog::log('login', null, 'Admin logged in');

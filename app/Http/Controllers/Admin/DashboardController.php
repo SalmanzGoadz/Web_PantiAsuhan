@@ -14,12 +14,19 @@ use Illuminate\View\View;
 class DashboardController extends Controller
 {
     /**
-     * Show the admin dashboard.
+     * Tampilkan dashboard admin.
+     *
+     * Update: Kalkulasi saldo sekarang hanya menghitung donasi 'tervalidasi'.
+     * Ditambahkan data antrian donasi yang menunggu validasi.
      */
     public function index(): View
     {
-        $totalDonors = Donor::sum('amount');
+        // Kalkulasi saldo — HANYA donasi yang sudah tervalidasi
+        $totalDonors = Donor::tervalidasi()->sum('amount');
         $totalExpensesTerlaksana = Expense::terlaksana()->sum('amount');
+
+        // Jumlah donasi yang menunggu validasi (untuk badge notifikasi)
+        $pendingDonationsCount = Donor::menunggu()->count();
 
         $stats = [
             'total_news' => News::count(),
@@ -30,6 +37,7 @@ class DashboardController extends Controller
             'total_balance' => $totalDonors - $totalExpensesTerlaksana,
             'total_donors' => $totalDonors,
             'donor_count' => Donor::count(),
+            'pending_donations' => $pendingDonationsCount,
         ];
 
         $recentActivities = ActivityLog::with('user')
@@ -37,6 +45,12 @@ class DashboardController extends Controller
             ->take(10)
             ->get();
 
-        return view('admin.dashboard', compact('stats', 'recentActivities'));
+        // Ambil donasi yang menunggu validasi (untuk ditampilkan di dashboard)
+        $pendingDonations = Donor::menunggu()
+            ->latestFirst()
+            ->take(10)
+            ->get();
+
+        return view('admin.dashboard', compact('stats', 'recentActivities', 'pendingDonations'));
     }
 }

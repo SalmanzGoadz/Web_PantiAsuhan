@@ -8,12 +8,16 @@ use App\Http\Controllers\Admin\HeroSlideController;
 use App\Http\Controllers\Admin\NewsController;
 use App\Http\Controllers\Admin\OrganizationMemberController;
 use App\Http\Controllers\Admin\SiteSettingController;
+use App\Http\Controllers\Donatur\AuthController as DonaturAuthController;
+use App\Http\Controllers\Donatur\DashboardController as DonaturDashboardController;
 use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
-| Public Routes
+| Public Routes (Tanpa Autentikasi)
 |--------------------------------------------------------------------------
+| Semua halaman ini bisa diakses oleh siapa saja tanpa login.
+| Website ini pada dasarnya adalah Company Profile publik.
 */
 
 use App\Http\Controllers\PublicController;
@@ -31,30 +35,64 @@ Route::get('/kontak', [PublicController::class, 'contact'])->name('contact');
 
 /*
 |--------------------------------------------------------------------------
+| Donatur Authentication Routes (Guest only — Opsional)
+|--------------------------------------------------------------------------
+| Login & Register hanya untuk pengunjung yang INGIN menjadi donatur
+| terdaftar. Fitur ini bersifat opsional — website tetap bisa diakses
+| tanpa login.
+*/
+
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [DonaturAuthController::class, 'showLoginForm'])->name('donatur.login');
+    Route::post('/login', [DonaturAuthController::class, 'login'])->middleware('throttle:5,1');
+    Route::get('/register', [DonaturAuthController::class, 'showRegisterForm'])->name('donatur.register');
+    Route::post('/register', [DonaturAuthController::class, 'register']);
+});
+
+// Logout donatur (harus login)
+Route::post('/logout', [DonaturAuthController::class, 'logout'])
+    ->middleware('auth')
+    ->name('donatur.logout');
+
+/*
+|--------------------------------------------------------------------------
+| Donatur Protected Routes (Login Required + Role Donatur)
+|--------------------------------------------------------------------------
+| Area khusus donatur terdaftar — melihat riwayat donasi & kirim donasi baru.
+*/
+
+Route::prefix('donatur')->name('donatur.')->middleware(['auth', 'role:donatur'])->group(function () {
+    Route::get('/dashboard', [DonaturDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/donasi/kirim', [DonaturDashboardController::class, 'createDonation'])->name('donation.create');
+    Route::post('/donasi/kirim', [DonaturDashboardController::class, 'storeDonation'])->name('donation.store');
+});
+
+/*
+|--------------------------------------------------------------------------
 | Admin Authentication Routes (Guest only)
 |--------------------------------------------------------------------------
 */
 
 Route::prefix('admin')->name('admin.')->group(function () {
 
-    // Guest routes (not authenticated)
+    // Guest routes (belum login)
     Route::middleware('guest')->group(function () {
         Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
         Route::post('login', [AuthController::class, 'login'])->middleware('throttle:5,1');
     });
 
-    // Logout (authenticated)
+    // Logout (harus login)
     Route::post('logout', [AuthController::class, 'logout'])
         ->middleware('auth')
         ->name('logout');
 
     /*
     |----------------------------------------------------------------------
-    | Admin Protected Routes
+    | Admin Protected Routes (Login Required + Role Admin)
     |----------------------------------------------------------------------
     */
 
-    Route::middleware('auth')->group(function () {
+    Route::middleware(['auth', 'role:admin'])->group(function () {
 
         // Dashboard
         Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -83,7 +121,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::put('settings/donation', [SiteSettingController::class, 'updateDonation'])->name('settings.update-donation');
         Route::put('settings/page/{slug}', [SiteSettingController::class, 'updatePage'])->name('settings.update-page');
 
-        // Buku Kas — Financial Transparency
+        // Buku Kas — Transparansi Keuangan
         Route::prefix('buku-kas')->name('buku-kas.')->group(function () {
             Route::get('/', [BukuKasController::class, 'index'])->name('index');
 
@@ -91,6 +129,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::post('donors', [BukuKasController::class, 'storeDonor'])->name('donors.store');
             Route::put('donors/{donor}', [BukuKasController::class, 'updateDonor'])->name('donors.update');
             Route::delete('donors/{donor}', [BukuKasController::class, 'destroyDonor'])->name('donors.destroy');
+
+            // Validasi donasi (tombol Validasi di dashboard admin)
+            Route::patch('donors/{donor}/validate', [BukuKasController::class, 'validateDonor'])->name('donors.validate');
 
             // Expenses / RAB
             Route::post('expenses', [BukuKasController::class, 'storeExpense'])->name('expenses.store');

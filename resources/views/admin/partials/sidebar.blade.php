@@ -61,11 +61,20 @@
         {{-- Keuangan --}}
         <p class="px-3 pt-4 pb-1 text-[11px] font-semibold text-text-light uppercase tracking-wider">Keuangan</p>
 
+        @php
+            $pendingDonationsBadge = \App\Models\Donor::menunggu()->count();
+        @endphp
         <a href="{{ route('admin.buku-kas.index') }}"
            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-fast
                   {{ request()->routeIs('admin.buku-kas.*') ? 'bg-primary/10 text-primary' : 'text-text hover:bg-background' }}">
             <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             Buku Kas
+            {{-- Badge notifikasi donasi menunggu validasi --}}
+            @if($pendingDonationsBadge > 0)
+                <span class="ml-auto px-1.5 py-0.5 bg-red-500 text-white text-[10px] font-bold rounded-full leading-none">
+                    {{ $pendingDonationsBadge }}
+                </span>
+            @endif
         </a>
 
         {{-- Settings --}}
