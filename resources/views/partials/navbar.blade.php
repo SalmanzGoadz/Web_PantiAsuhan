@@ -47,33 +47,34 @@
                 <a href="{{ route('news.index') }}" class="text-sm font-medium transition-colors hover:text-primary {{ request()->routeIs('news.*') ? 'text-primary' : 'text-text' }}">Berita</a>
                 <a href="{{ route('gallery.index') }}" class="text-sm font-medium transition-colors hover:text-primary {{ request()->routeIs('gallery.*') ? 'text-primary' : 'text-text' }}">Galeri</a>
                 <a href="{{ route('contact') }}" class="text-sm font-medium transition-colors hover:text-primary {{ request()->routeIs('contact') ? 'text-primary' : 'text-text' }}">Kontak</a>
-                
-                <a href="{{ route('donation') }}" class="inline-flex items-center justify-center px-6 py-2.5 ml-4 bg-primary text-white font-semibold text-sm rounded-full hover:bg-primary-dark transition-all hover:-translate-y-0.5 shadow-subtle hover:shadow-elevated">
-                    Donasi Sekarang
-                </a>
 
-                {{-- Tombol Masuk/Daftar atau Dashboard/Logout --}}
-                @auth
-                    @if(Auth::user()->isAdmin())
-                        <a href="{{ route('admin.dashboard') }}" class="text-sm font-medium text-accent hover:text-green-700 transition-colors">
-                            Admin Panel
-                        </a>
-                    @else
-                        <a href="{{ route('donatur.dashboard') }}" class="inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:text-green-700 transition-colors">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                            Dashboard Saya
-                        </a>
-                    @endif
-                    <form method="POST" action="{{ Auth::user()->isAdmin() ? route('admin.logout') : route('donatur.logout') }}" class="inline">
-                        @csrf
-                        <button type="submit" class="text-sm font-medium text-text-light hover:text-danger transition-colors">Keluar</button>
-                    </form>
-                @else
-                    <a href="{{ route('donatur.login') }}" class="text-sm font-medium text-text hover:text-primary transition-colors">Masuk</a>
-                    <a href="{{ route('donatur.register') }}" class="inline-flex items-center justify-center px-4 py-2 bg-green-800 text-white font-semibold text-sm rounded-full hover:bg-green-900 transition-all shadow-sm">
-                        Daftar
+                {{-- Right Side: CTA + Auth --}}
+                <div class="flex items-center gap-x-6 ml-4">
+                    <a href="{{ route('donation') }}" class="bg-[#ff6b00] text-white px-5 py-2 rounded-lg text-[13px] font-bold hover:opacity-90 transition-all shrink-0 shadow-sm">
+                        Donasi Sekarang
                     </a>
-                @endauth
+
+                    @auth
+                        <div class="flex items-center gap-x-4">
+                            @if(Auth::user()->isAdmin())
+                                <a href="{{ route('admin.dashboard') }}" class="text-[13px] font-bold text-gray-700 hover:text-[#009c48] transition-colors">
+                                    Admin Panel
+                                </a>
+                            @else
+                                <a href="{{ route('donatur.dashboard') }}" class="text-[13px] font-bold text-gray-700 hover:text-[#009c48] transition-colors">
+                                    Dashboard Saya
+                                </a>
+                            @endif
+                            <div class="h-4 w-[1px] bg-gray-300"></div>
+                            <form method="POST" action="{{ Auth::user()->isAdmin() ? route('admin.logout') : route('donatur.logout') }}">
+                                @csrf
+                                <button type="submit" class="text-[13px] font-bold text-gray-400 hover:text-red-500 transition-colors">Keluar</button>
+                            </form>
+                        </div>
+                    @else
+                        <a href="{{ route('donatur.login') }}" class="text-[13px] font-bold text-gray-700 hover:text-[#009c48] transition-colors">Masuk</a>
+                    @endauth
+                </div>
             </div>
 
             {{-- Mobile Menu Button --}}
@@ -128,14 +129,9 @@
                         </button>
                     </form>
                 @else
-                    <div class="flex gap-2">
-                        <a href="{{ route('donatur.login') }}" class="flex-1 text-center px-4 py-3 border border-border text-heading font-semibold text-base rounded-xl hover:bg-background transition-colors">
-                            Masuk
-                        </a>
-                        <a href="{{ route('donatur.register') }}" class="flex-1 text-center px-4 py-3 bg-green-800 text-white font-semibold text-base rounded-xl hover:bg-green-900 transition-colors">
-                            Daftar
-                        </a>
-                    </div>
+                    <a href="{{ route('donatur.login') }}" class="block w-full text-center px-4 py-3 border border-border text-heading font-semibold text-base rounded-xl hover:bg-background transition-colors">
+                        Masuk
+                    </a>
                 @endauth
             </div>
         </div>

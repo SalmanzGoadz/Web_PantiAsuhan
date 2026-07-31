@@ -1,5 +1,5 @@
 {{-- Layout Dashboard Donatur --}}
-{{-- Layout sederhana dengan navbar untuk area donatur --}}
+{{-- Layout dengan topbar putih profesional untuk area donatur --}}
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -12,49 +12,49 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="bg-background min-h-screen font-body text-text flex flex-col">
+<body class="bg-gray-50 min-h-screen font-body text-text flex flex-col">
 
-    {{-- Navbar Donatur --}}
-    <nav class="bg-green-800 text-white shadow-lg sticky top-0 z-50">
+    {{-- Topbar Donatur --}}
+    <header class="bg-white shadow-sm sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
-                {{-- Brand --}}
-                <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-lg bg-white/20 flex items-center justify-center">
-                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <h1 class="font-heading font-bold text-sm leading-tight">Portal Donatur</h1>
-                        <p class="text-xs text-white/70">{{ config('app.name') }}</p>
-                    </div>
-                </div>
+                {{-- Kiri: Kembali ke Website --}}
+                <a href="{{ route('home') }}" class="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-[#009c48] font-medium transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                    Kembali ke Beranda
+                </a>
 
-                {{-- Menu --}}
-                <div class="flex items-center gap-4">
+                {{-- Tengah: Nav Links --}}
+                <nav class="hidden sm:flex items-center gap-6">
                     <a href="{{ route('donatur.dashboard') }}"
-                       class="text-sm font-medium hover:text-white/80 transition-colors {{ request()->routeIs('donatur.dashboard') ? 'underline underline-offset-4' : '' }}">
+                       class="text-[13px] font-bold transition-colors {{ request()->routeIs('donatur.dashboard') ? 'text-[#009c48]' : 'text-gray-600 hover:text-[#009c48]' }}">
                         Dashboard
                     </a>
                     <a href="{{ route('donatur.donation.create') }}"
-                       class="text-sm font-medium hover:text-white/80 transition-colors {{ request()->routeIs('donatur.donation.*') ? 'underline underline-offset-4' : '' }}">
+                       class="text-[13px] font-bold transition-colors {{ request()->routeIs('donatur.donation.*') ? 'text-[#009c48]' : 'text-gray-600 hover:text-[#009c48]' }}">
                         Kirim Donasi
                     </a>
-                    <span class="hidden sm:inline text-white/40">|</span>
-                    <div class="flex items-center gap-2">
-                        <span class="hidden sm:inline text-sm text-white/70">{{ Auth::user()->name }}</span>
-                        <form method="POST" action="{{ route('donatur.logout') }}" class="inline">
-                            @csrf
-                            <button type="submit" class="text-sm text-white/70 hover:text-white transition-colors" title="Keluar">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-                            </button>
-                        </form>
+                </nav>
+
+                {{-- Kanan: Profil & Logout --}}
+                <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-8 h-8 rounded-full bg-[#009c48]/10 flex items-center justify-center">
+                            <span class="text-xs font-bold text-[#009c48]">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</span>
+                        </div>
+                        <span class="hidden sm:inline text-[13px] font-semibold text-gray-700">{{ Auth::user()->name }}</span>
                     </div>
+                    <div class="h-4 w-[1px] bg-gray-200"></div>
+                    <form method="POST" action="{{ route('donatur.logout') }}">
+                        @csrf
+                        <button type="submit" class="text-[13px] font-bold text-gray-400 hover:text-red-500 transition-colors">
+                            Keluar
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
-    </nav>
+    </header>
 
     {{-- Konten Utama --}}
     <main class="flex-grow">
@@ -89,10 +89,9 @@
     </main>
 
     {{-- Footer Sederhana --}}
-    <footer class="bg-surface border-t border-border py-4">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2">
-            <p class="text-xs text-text-light">&copy; {{ date('Y') }} {{ config('app.name') }}</p>
-            <a href="{{ route('home') }}" class="text-xs text-green-800 hover:underline">← Kembali ke Website</a>
+    <footer class="bg-white border-t border-gray-100 py-4">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <p class="text-xs text-gray-400 text-center">&copy; {{ date('Y') }} {{ config('app.name') }}</p>
         </div>
     </footer>
 
