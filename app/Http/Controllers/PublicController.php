@@ -61,6 +61,17 @@ class PublicController extends Controller
     }
 
     /**
+     * Show the Jadwal Kegiatan page.
+     */
+    public function jadwalKegiatan(): View
+    {
+        $jadwalKegiatan = SiteSetting::get('jadwal_kegiatan');
+        $siteName = SiteSetting::get('site_name', 'Panti Asuhan');
+
+        return view('public.jadwal-kegiatan', compact('jadwalKegiatan', 'siteName'));
+    }
+
+    /**
      * Show the listing of published news.
      */
     public function newsIndex(Request $request): View

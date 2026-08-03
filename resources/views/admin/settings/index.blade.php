@@ -148,6 +148,23 @@
         </form>
     </div>
 
+    {{-- Jadwal Kegiatan --}}
+    <div class="bg-surface rounded-xl shadow-card">
+        <div class="px-6 py-4 border-b border-border">
+            <h2 class="font-heading font-semibold text-heading">Jadwal Kegiatan Panti</h2>
+            <p class="text-xs text-text-light mt-1">Atur jadwal kegiatan harian/mingguan panti (mendukung tabel, list, dan format teks)</p>
+        </div>
+        <form method="POST" action="{{ route('admin.settings.update-jadwal-kegiatan') }}" class="p-6 space-y-4">
+            @csrf @method('PUT')
+            <div>
+                <label class="block text-sm font-medium text-text mb-1.5">Konten Jadwal Kegiatan</label>
+                <textarea name="jadwal_kegiatan" rows="12"
+                          class="tinymce w-full px-4 py-2.5 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary resize-y">{{ $settings['jadwal_kegiatan'] ?? '' }}</textarea>
+            </div>
+            <button type="submit" class="px-6 py-2.5 bg-primary text-white font-semibold text-sm rounded-lg hover:bg-primary-dark transition-fast">Simpan</button>
+        </form>
+    </div>
+
     {{-- CMS Pages --}}
     @foreach([
         ['slug' => 'tentang-kami', 'label' => 'Halaman Tentang Kami', 'page' => $pageAbout],

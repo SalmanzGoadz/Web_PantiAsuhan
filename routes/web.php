@@ -22,6 +22,7 @@ Route::get('/', [PublicController::class, 'home'])->name('home');
 Route::get('/tentang-kami', [PublicController::class, 'about'])->name('about');
 Route::get('/struktur-organisasi', [PublicController::class, 'organization'])->name('organization');
 Route::get('/sop-pengasuhan', [PublicController::class, 'sop'])->name('sop');
+Route::get('/profil/jadwal-kegiatan', [PublicController::class, 'jadwalKegiatan'])->name('jadwal-kegiatan');
 Route::get('/berita', [PublicController::class, 'newsIndex'])->name('news.index');
 Route::get('/berita/{slug}', [PublicController::class, 'newsShow'])->name('news.show');
 Route::get('/galeri', [PublicController::class, 'galleryIndex'])->name('gallery.index');
@@ -82,6 +83,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::put('settings/social', [SiteSettingController::class, 'updateSocial'])->name('settings.update-social');
         Route::put('settings/donation', [SiteSettingController::class, 'updateDonation'])->name('settings.update-donation');
         Route::put('settings/page/{slug}', [SiteSettingController::class, 'updatePage'])->name('settings.update-page');
+        Route::put('settings/jadwal-kegiatan', [SiteSettingController::class, 'updateJadwalKegiatan'])->name('settings.update-jadwal-kegiatan');
 
         // Buku Kas — Financial Transparency
         Route::prefix('buku-kas')->name('buku-kas.')->group(function () {

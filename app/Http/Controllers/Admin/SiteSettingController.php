@@ -165,4 +165,20 @@ class SiteSettingController extends Controller
 
         return back()->with('success', 'Halaman berhasil disimpan.');
     }
+
+    /**
+     * Update jadwal kegiatan setting.
+     */
+    public function updateJadwalKegiatan(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'jadwal_kegiatan' => ['nullable', 'string'],
+        ]);
+
+        SiteSetting::set('jadwal_kegiatan', $request->jadwal_kegiatan, 'general');
+
+        ActivityLog::log('updated', null, 'Memperbarui jadwal kegiatan panti');
+
+        return back()->with('success', 'Jadwal kegiatan berhasil disimpan.');
+    }
 }

@@ -40,6 +40,7 @@
                             <a href="{{ route('about') }}" class="block px-4 py-2 text-sm text-text hover:bg-primary/5 hover:text-primary">Tentang Kami</a>
                             <a href="{{ route('organization') }}" class="block px-4 py-2 text-sm text-text hover:bg-primary/5 hover:text-primary">Pengurus</a>
                             <a href="{{ route('sop') }}" class="block px-4 py-2 text-sm text-text hover:bg-primary/5 hover:text-primary">SOP Pengasuhan</a>
+                            <a href="{{ route('jadwal-kegiatan') }}" class="block px-4 py-2 text-sm text-text hover:bg-primary/5 hover:text-primary">Jadwal Kegiatan</a>
                         </div>
                     </div>
                 </div>
@@ -76,6 +77,7 @@
                 <a href="{{ route('about') }}" class="block px-3 py-2.5 rounded-lg text-base font-medium {{ request()->routeIs('about') ? 'bg-primary/10 text-primary' : 'text-text hover:bg-background' }}">Tentang Kami</a>
                 <a href="{{ route('organization') }}" class="block px-3 py-2.5 rounded-lg text-base font-medium {{ request()->routeIs('organization') ? 'bg-primary/10 text-primary' : 'text-text hover:bg-background' }}">Pengurus</a>
                 <a href="{{ route('sop') }}" class="block px-3 py-2.5 rounded-lg text-base font-medium {{ request()->routeIs('sop') ? 'bg-primary/10 text-primary' : 'text-text hover:bg-background' }}">SOP Pengasuhan</a>
+                <a href="{{ route('jadwal-kegiatan') }}" class="block px-3 py-2.5 rounded-lg text-base font-medium {{ request()->routeIs('jadwal-kegiatan') ? 'bg-primary/10 text-primary' : 'text-text hover:bg-background' }}">Jadwal Kegiatan</a>
             </div>
 
             <a href="{{ route('news.index') }}" class="block px-3 py-2.5 rounded-lg text-base font-medium {{ request()->routeIs('news.*') ? 'bg-primary/10 text-primary' : 'text-text hover:bg-background' }}">Berita</a>
