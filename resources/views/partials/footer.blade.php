@@ -98,7 +98,7 @@
     <div class="bg-background border-t border-border py-6">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
             <p class="text-sm text-text-light text-center md:text-left">
-                &copy; {{ date('Y') }} {{ \App\Models\SiteSetting::get('site_name', 'Panti Asuhan') }}. Hak Cipta Dilindungi.-ABU
+                &copy; {{ date('Y') }} {{ \App\Models\SiteSetting::get('site_name', 'Panti Asuhan') }}. Hak Cipta Dilindungi.
             </p>
             <!-- <div class="flex items-center gap-4 text-sm text-text-light">
                 <a href="{{ route('admin.login') }}" class="hover:text-primary transition-colors">Admin Login</a>

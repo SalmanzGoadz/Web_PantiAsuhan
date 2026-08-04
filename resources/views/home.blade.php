@@ -13,16 +13,18 @@
                  :class="{ 'opacity-100 z-10': activeSlide === {{ $index }}, 'opacity-0 z-0': activeSlide !== {{ $index }} }">
                 {{-- Image Background --}}
                 <div class="absolute inset-0 bg-gray-900">
-                    <img src="{{ $slide->image_url }}" alt="{{ $slide->title }}" class="w-full h-full object-cover opacity-60">
+                    <img src="{{ $slide->image_url }}" alt="{{ $slide->title }}" class="w-full h-full object-cover opacity-50">
                 </div>
+                {{-- Gradient Overlay for Text Readability --}}
+                <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent pointer-events-none z-[15]"></div>
                 {{-- Content --}}
-                <div class="relative z-20 h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-center">
+                <div class="relative z-20 h-full max-w-7xl mx-auto px-8 md:px-24 lg:px-32 flex flex-col justify-center">
                     <div class="max-w-3xl animate-fade-in-up" x-show="activeSlide === {{ $index }}" x-transition:enter="transition ease-out duration-700 delay-300" x-transition:enter-start="opacity-0 translate-y-8" x-transition:enter-end="opacity-100 translate-y-0">
                         <h1 class="text-3xl md:text-5xl lg:text-6xl font-heading font-bold text-white leading-tight mb-4 drop-shadow-lg">
                             {{ $slide->title }}
                         </h1>
                         @if($slide->subtitle)
-                            <p class="text-lg md:text-xl text-gray-200 mb-8 drop-shadow-md max-w-2xl">
+                            <p class="text-sm md:text-base lg:text-lg text-gray-200 mb-8 drop-shadow-md max-w-2xl">
                                 {{ $slide->subtitle }}
                             </p>
                         @endif
@@ -48,10 +50,10 @@
 
         {{-- Controls --}}
         @if($slides->count() > 1)
-            <button @click="prev()" class="absolute left-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full bg-white/20 hover:bg-white/40 backdrop-blur-sm flex items-center justify-center text-white transition-colors">
+            <button @click="prev()" class="absolute left-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full bg-white/20 hover:bg-white/40 backdrop-blur-sm hidden md:flex items-center justify-center text-white transition-colors">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
             </button>
-            <button @click="next()" class="absolute right-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full bg-white/20 hover:bg-white/40 backdrop-blur-sm flex items-center justify-center text-white transition-colors">
+            <button @click="next()" class="absolute right-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full bg-white/20 hover:bg-white/40 backdrop-blur-sm hidden md:flex items-center justify-center text-white transition-colors">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
             </button>
             <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex gap-2">
