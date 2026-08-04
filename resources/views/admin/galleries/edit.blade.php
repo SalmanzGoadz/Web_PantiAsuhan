@@ -28,7 +28,7 @@
                         <div class="relative group rounded-lg overflow-hidden border border-border">
                             <img src="{{ $item->image_url }}" alt="{{ $item->caption }}" class="w-full aspect-square object-cover">
                             <div class="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-default flex items-center justify-center">
-                                <form method="POST" action="{{ route('admin.gallery-items.destroy', $item) }}" onsubmit="return confirm('Hapus foto ini?')" class="opacity-0 group-hover:opacity-100 transition-default">
+                                <form method="POST" action="{{ route('admin.gallery-items.destroy', $item) }}" class="form-delete opacity-0 group-hover:opacity-100 transition-default">
                                     @csrf @method('DELETE')
                                     <button type="submit" class="p-2 bg-white rounded-lg text-danger hover:bg-red-50 shadow-card">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>

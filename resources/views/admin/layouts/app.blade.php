@@ -10,6 +10,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <!-- TinyMCE CDN -->
     <script src="https://cdn.tiny.cloud/1/wtxi45plbgzd5qvfq1inyi9nu05dq0c02htgjdp33guix3e2/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
     <script>
@@ -38,17 +41,7 @@
 
             {{-- Page Content --}}
             <main class="flex-1 p-6">
-                {{-- Flash Messages --}}
-                @if(session('success'))
-                    <div id="flash-success" class="mb-6 p-4 rounded-md bg-green-50 border border-green-200 text-green-800 flex items-center justify-between">
-                        <div class="flex items-center gap-2">
-                            <svg class="w-5 h-5 text-green-500 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
-                            <span>{{ session('success') }}</span>
-                        </div>
-                        <button onclick="this.parentElement.remove()" class="text-green-500 hover:text-green-700">&times;</button>
-                    </div>
-                @endif
-
+                {{-- Validation Errors --}}
                 @if($errors->any())
                     <div class="mb-6 p-4 rounded-md bg-red-50 border border-red-200 text-red-800">
                         <div class="flex items-center gap-2 mb-2">
@@ -70,13 +63,37 @@
 
     @stack('scripts')
 
-    <script>
-        // Auto-hide flash messages after 5s
-        setTimeout(() => {
-            const flash = document.getElementById('flash-success');
-            if (flash) flash.style.display = 'none';
-        }, 5000);
+    {{-- Global SweetAlert2 Flash Messages --}}
+    @include('partials.flash-sweetalert')
 
+    {{-- Global SweetAlert2 Delete Confirmation --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const deleteForms = document.querySelectorAll('.form-delete');
+            deleteForms.forEach(form => {
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    Swal.fire({
+                        title: 'Yakin ingin menghapus data ini?',
+                        text: "Data yang dihapus tidak dapat dikembalikan!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Ya, Hapus!',
+                        cancelButtonText: 'Batal',
+                        reverseButtons: true
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+
+    <script>
         // Mobile sidebar toggle
         function toggleSidebar() {
             const sidebar = document.getElementById('admin-sidebar');

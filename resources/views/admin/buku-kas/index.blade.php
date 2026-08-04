@@ -65,6 +65,45 @@
         </div>
     </div>
 
+    {{-- Date Range Filter & Export --}}
+    <div class="bg-surface rounded-xl shadow-card p-4">
+        <form method="GET" action="{{ route('admin.buku-kas.index') }}" class="flex flex-col sm:flex-row items-end gap-3">
+            {{-- Preserve existing search/status params --}}
+            @if(request('donor_search'))
+                <input type="hidden" name="donor_search" value="{{ request('donor_search') }}">
+            @endif
+            @if(request('expense_search'))
+                <input type="hidden" name="expense_search" value="{{ request('expense_search') }}">
+            @endif
+            @if(request('expense_status'))
+                <input type="hidden" name="expense_status" value="{{ request('expense_status') }}">
+            @endif
+            @if(request('tab'))
+                <input type="hidden" name="tab" value="{{ request('tab') }}">
+            @endif
+
+            <div class="flex-1 w-full sm:w-auto">
+                <label for="start_date" class="block text-xs font-medium text-text-light mb-1">Dari Tanggal</label>
+                <input type="date" id="start_date" name="start_date" value="{{ request('start_date') }}"
+                       class="w-full px-4 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary">
+            </div>
+            <div class="flex-1 w-full sm:w-auto">
+                <label for="end_date" class="block text-xs font-medium text-text-light mb-1">Sampai Tanggal</label>
+                <input type="date" id="end_date" name="end_date" value="{{ request('end_date') }}"
+                       class="w-full px-4 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary">
+            </div>
+            <button type="submit" class="px-4 py-2 bg-background text-text text-sm font-medium rounded-lg hover:bg-border transition-fast flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
+                Filter
+            </button>
+            <a href="{{ route('admin.buku-kas.export', ['start_date' => request('start_date'), 'end_date' => request('end_date')]) }}"
+               class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-bold text-sm rounded-lg shadow-sm flex items-center gap-2 transition-fast">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                Ekspor Spreadsheet
+            </a>
+        </form>
+    </div>
+
     {{-- Tab Navigation --}}
     <div class="border-b border-border">
         <nav class="flex gap-4 -mb-px">
@@ -126,6 +165,12 @@
             <div class="bg-surface rounded-xl shadow-card p-4">
                 <form method="GET" class="flex flex-col sm:flex-row gap-3">
                     <input type="hidden" name="tab" value="donors">
+                    @if(request('start_date'))
+                        <input type="hidden" name="start_date" value="{{ request('start_date') }}">
+                    @endif
+                    @if(request('end_date'))
+                        <input type="hidden" name="end_date" value="{{ request('end_date') }}">
+                    @endif
                     <input type="text" name="donor_search" value="{{ request('donor_search') }}" placeholder="Cari nama donatur..."
                            class="flex-1 px-4 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary">
                     <button type="submit" class="px-4 py-2 bg-background text-text text-sm font-medium rounded-lg hover:bg-border transition-fast">Filter</button>
@@ -168,7 +213,7 @@
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                             </button>
                                             {{-- Delete --}}
-                                            <form method="POST" action="{{ route('admin.buku-kas.donors.destroy', $donor) }}" onsubmit="return confirm('Yakin ingin menghapus data donatur ini?')">
+                                            <form method="POST" action="{{ route('admin.buku-kas.donors.destroy', $donor) }}" class="form-delete">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="p-2 rounded-lg text-text-light hover:text-danger hover:bg-red-50 transition-fast" title="Hapus">
@@ -254,6 +299,12 @@
             <div class="bg-surface rounded-xl shadow-card p-4">
                 <form method="GET" class="flex flex-col sm:flex-row gap-3">
                     <input type="hidden" name="tab" value="expenses">
+                    @if(request('start_date'))
+                        <input type="hidden" name="start_date" value="{{ request('start_date') }}">
+                    @endif
+                    @if(request('end_date'))
+                        <input type="hidden" name="end_date" value="{{ request('end_date') }}">
+                    @endif
                     <input type="text" name="expense_search" value="{{ request('expense_search') }}" placeholder="Cari judul pengeluaran..."
                            class="flex-1 px-4 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary">
                     <select name="expense_status" class="px-4 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/30">
@@ -325,7 +376,7 @@
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                             </button>
                                             {{-- Delete --}}
-                                            <form method="POST" action="{{ route('admin.buku-kas.expenses.destroy', $expense) }}" onsubmit="return confirm('Yakin ingin menghapus data pengeluaran ini?')">
+                                            <form method="POST" action="{{ route('admin.buku-kas.expenses.destroy', $expense) }}" class="form-delete">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="p-2 rounded-lg text-text-light hover:text-danger hover:bg-red-50 transition-fast" title="Hapus">

@@ -13,6 +13,7 @@ use App\Models\Expense;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class BukuKasController extends Controller
 {
@@ -41,6 +42,12 @@ class BukuKasController extends Controller
         if ($request->filled('donor_search')) {
             $donorsQuery->where('name', 'like', '%' . $request->donor_search . '%');
         }
+        if ($request->filled('start_date')) {
+            $donorsQuery->whereDate('date', '>=', $request->start_date);
+        }
+        if ($request->filled('end_date')) {
+            $donorsQuery->whereDate('date', '<=', $request->end_date);
+        }
         $donors = $donorsQuery->paginate(15, ['*'], 'donor_page')->withQueryString();
 
         // Expenses list with pagination
@@ -50,6 +57,12 @@ class BukuKasController extends Controller
         }
         if ($request->filled('expense_status')) {
             $expensesQuery->where('status', $request->expense_status);
+        }
+        if ($request->filled('start_date')) {
+            $expensesQuery->whereDate('date', '>=', $request->start_date);
+        }
+        if ($request->filled('end_date')) {
+            $expensesQuery->whereDate('date', '<=', $request->end_date);
         }
         $expenses = $expensesQuery->paginate(15, ['*'], 'expense_page')->withQueryString();
 
@@ -173,5 +186,86 @@ class BukuKasController extends Controller
         return redirect()
             ->route('admin.buku-kas.index')
             ->with('success', "Status \"{$expense->title}\" diubah menjadi {$statusLabel}.");
+    }
+
+    /* -------------------------------------------------------
+     * EXPORT CSV
+     * ----------------------------------------------------- */
+
+    /**
+     * Export Buku Kas data (donors + expenses) as a CSV file.
+     * Applies the same start_date / end_date filters used in index().
+     */
+    public function export(Request $request): StreamedResponse
+    {
+        $startDate = $request->input('start_date');
+        $endDate   = $request->input('end_date');
+
+        // Build donors query with date filters
+        $donorsQuery = Donor::latestFirst();
+        if ($startDate) {
+            $donorsQuery->whereDate('date', '>=', $startDate);
+        }
+        if ($endDate) {
+            $donorsQuery->whereDate('date', '<=', $endDate);
+        }
+
+        // Build expenses query with date filters
+        $expensesQuery = Expense::latestFirst();
+        if ($startDate) {
+            $expensesQuery->whereDate('date', '>=', $startDate);
+        }
+        if ($endDate) {
+            $expensesQuery->whereDate('date', '<=', $endDate);
+        }
+
+        $donors   = $donorsQuery->get();
+        $expenses = $expensesQuery->get();
+
+        $filename = 'Laporan_Buku_Kas';
+        if ($startDate || $endDate) {
+            $filename .= '_' . ($startDate ?? 'awal') . '_sd_' . ($endDate ?? 'sekarang');
+        }
+        $filename .= '.csv';
+
+        $headers = [
+            'Content-Type'        => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ];
+
+        $callback = function () use ($donors, $expenses) {
+            $handle = fopen('php://output', 'w');
+
+            // BOM for UTF-8 Excel compatibility
+            fprintf($handle, chr(0xEF) . chr(0xBB) . chr(0xBF));
+
+            // Header row
+            fputcsv($handle, ['Tanggal', 'Keterangan', 'Jenis', 'Nominal']);
+
+            // Donor rows (Pemasukan)
+            foreach ($donors as $donor) {
+                fputcsv($handle, [
+                    $donor->date->format('d/m/Y'),
+                    'Donasi: ' . $donor->display_name,
+                    'Pemasukan',
+                    $donor->amount,
+                ]);
+            }
+
+            // Expense rows (Pengeluaran)
+            foreach ($expenses as $expense) {
+                $statusLabel = $expense->isTerlaksana() ? 'Terlaksana' : 'Rencana';
+                fputcsv($handle, [
+                    $expense->date->format('d/m/Y'),
+                    $expense->title . ($expense->description ? ' — ' . $expense->description : ''),
+                    'Pengeluaran (' . $statusLabel . ')',
+                    $expense->amount,
+                ]);
+            }
+
+            fclose($handle);
+        };
+
+        return new StreamedResponse($callback, 200, $headers);
     }
 }

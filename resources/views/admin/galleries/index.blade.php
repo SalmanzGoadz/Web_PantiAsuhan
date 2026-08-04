@@ -46,7 +46,7 @@
                     <p class="text-xs text-text-light mt-1">{{ $gallery->published_at ? $gallery->published_at->format('d M Y') : 'Belum dipublish' }}</p>
                     <div class="flex items-center gap-2 mt-3">
                         <a href="{{ route('admin.galleries.edit', $gallery) }}" class="flex-1 text-center py-2 bg-background text-text text-xs font-medium rounded-lg hover:bg-border transition-fast">Edit</a>
-                        <form method="POST" action="{{ route('admin.galleries.destroy', $gallery) }}" onsubmit="return confirm('Yakin ingin menghapus album ini beserta semua fotonya?')" class="flex-1">
+                        <form method="POST" action="{{ route('admin.galleries.destroy', $gallery) }}" class="form-delete flex-1">
                             @csrf @method('DELETE')
                             <button type="submit" class="w-full py-2 bg-red-50 text-danger text-xs font-medium rounded-lg hover:bg-red-100 transition-fast">Hapus</button>
                         </form>

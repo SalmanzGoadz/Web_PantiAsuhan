@@ -88,6 +88,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Buku Kas — Financial Transparency
         Route::prefix('buku-kas')->name('buku-kas.')->group(function () {
             Route::get('/', [BukuKasController::class, 'index'])->name('index');
+            Route::get('export', [BukuKasController::class, 'export'])->name('export');
 
             // Donors
             Route::post('donors', [BukuKasController::class, 'storeDonor'])->name('donors.store');
